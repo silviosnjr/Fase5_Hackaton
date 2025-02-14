@@ -14,7 +14,6 @@ imagens negativas (sem objetos perigosos) para reduzir falsos positivos;
 Arquivo principal: [hackaton_fase5.py](https://github.com/silviosnjr/Fase5_Hackaton/blob/main/hackaton_fase5.py)
 
 * Executar no terminar: python hackaton_fase5.py
-* Após execução irá gerar um arquivo de vídeo "output_video.mp4" e o "report.txt"
 
 **Segue link contendo vídeo explicando o trabalho: [https://vimeo.com/1056926165/aa93193d83](https://vimeo.com/1056926165/aa93193d83)**
 
