@@ -1,3 +1,3 @@
-Relatório de Detecção de Objetos Cortantes
+Relatorio de Deteccao de Objetos Cortantes
 ==================================================
 Objeto detectado no tempo: 4.11 segundos

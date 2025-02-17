@@ -17,8 +17,8 @@ output_folder = "frames_detectados"
 os.makedirs(output_folder, exist_ok=True)
 
 last_detected_image = None
-detection_log = []
-last_detection_frame = -1  # Novo: Armazena o índice do último frame com detecção
+detection_log = [] 
+
 
 def is_similar(image1, image2, threshold=0.90):
     if image1 is None or image2 is None:
@@ -32,6 +32,7 @@ def is_similar(image1, image2, threshold=0.90):
     score, _ = ssim(gray1, gray2, full=True)
     return score >= threshold  
 
+
 def detectar_objeto(image_path):
     image = Image.open(image_path)
     results = yolo_model(image)
@@ -43,11 +44,12 @@ def detectar_objeto(image_path):
                 return True  
     return False
 
+
 def enviar_alerta(image_path, tempo):
     sender = "silviosnjr@yahoo.com.br"
     receiver = "silviosnjr@gmail.com"
     subject = "Alerta de Segurança: Objeto Cortante Detectado"
-    body = f"Objeto cortante detectado no tempo {tempo} Veja a imagem em anexo."
+    body = f"Objeto cortante detectado no tempo {tempo:.2f} segundos Veja a imagem em anexo."
 
     msg = MIMEMultipart()
     msg["Subject"] = subject
@@ -73,8 +75,7 @@ def enviar_alerta(image_path, tempo):
 
     smtp_server = "smtp.mail.yahoo.com"
     smtp_port = 587  
-    #email_password = os.getenv("SENHA_YAHOO")
-    email_password = "wvuyhfbfdxumjtwh"
+    email_password = os.getenv("SENHA_YAHOO")
 
     try:
         with SMTP(smtp_server, smtp_port) as server:
@@ -85,12 +86,12 @@ def enviar_alerta(image_path, tempo):
     except Exception as e:
         print("Erro ao enviar e-mail:", e)
 
+
 video_path = "videos/video2.mp4" 
 cap = cv2.VideoCapture(video_path)
 
 frame_rate = cap.get(cv2.CAP_PROP_FPS) 
 frame_count = 0
-frame_delay = int(frame_rate * 2)  # Novo: Define um atraso de 2 segundos para capturar frame posterior
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -101,28 +102,18 @@ while cap.isOpened():
     timestamp = frame_count / frame_rate
     image_path = os.path.join(output_folder, f"frame_{int(time.time())}.jpg")
     
-    timestamp = int(time.time())
-    image_path = os.path.join(output_folder, f"frame_{timestamp}.jpg")
-
     if last_detected_image is None or not is_similar(last_detected_image, frame, threshold=0.90):
         cv2.imwrite(image_path, frame)
 
         if detectar_objeto(image_path):
             detection_log.append(f"Objeto detectado no tempo: {timestamp:.2f} segundos")
-            last_detected_image = frame
-            last_detection_frame = frame_count  # Novo: Armazena o frame da detecção
+            last_detected_image = frame 
             print(f"Objeto cortante detectado! Frame salvo em {image_path} - Tempo: {timestamp:.2f}s")
-            enviar_alerta(image_path, "{timestamp:.2f} segundos")
+            enviar_alerta(image_path, timestamp)
         else:
             os.remove(image_path)
     else:
         print(f"Frame muito semelhante ao anterior, ignorado.")
-
-    # Novo: Captura um frame posterior à detecção
-    if last_detection_frame > 0 and frame_count == last_detection_frame + frame_delay:
-        posterior_image_path = os.path.join(output_folder, f"frame_posterior_{timestamp}.jpg")
-        cv2.imwrite(posterior_image_path, frame)
-        print(f"Frame posterior capturado em {posterior_image_path}")
 
     cv2.imshow("Video", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):

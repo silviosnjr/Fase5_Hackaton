@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 
 # 1. Carregar um modelo pré-treinado (YOLOv8s para melhor eficiência)
-model = YOLO("yolov8s.pt")  
+model = YOLO("modelo_treinado.pt")  
 
 # 2. Treinar o modelo com seu dataset de facas
 model.train(
