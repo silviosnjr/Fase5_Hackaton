@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 1
+names: ['Knife']
+
+roboflow:
+  workspace: facas-hackaton
+  project: knife-xvq59-rbxho
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/facas-hackaton/knife-xvq59-rbxho/dataset/1
